@@ -1,0 +1,23 @@
+{
+  "name": "بيدو درايف — BeDo Gaming",
+  "short_name": "بيدو درايف",
+  "description": "لعبة سواقة مصرية في عالم مفتوح من BeDo Gaming",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "background_color": "#101820",
+  "theme_color": "#101820",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
