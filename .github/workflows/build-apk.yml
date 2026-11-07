@@ -1,0 +1,57 @@
+name: Build Bedo Drive Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+          log-accepted-android-sdk-licenses: false
+
+      - name: Generate Egyptian Neural Voices (if custom MP3s not provided)
+        run: |
+          pip install edge-tts || true
+          python3 generate_voices.py || true
+
+      - name: Install Capacitor & Generate Android Project
+        run: |
+          npm install
+          npx cap add android
+          mkdir -p assets
+          cp icon.png assets/icon-only.png
+          cp icon.png assets/splash.png
+          npx capacitor-assets generate --android || true
+          npx cap sync android
+
+      - name: Build Lightweight APK
+        working-directory: ./android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload Ready-to-Install APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BedoDrive-BeDoGaming-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
